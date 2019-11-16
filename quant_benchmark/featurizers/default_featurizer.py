@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright StateOfTheArt.quant. 
 #
-# * Commercial Usage: please contact allen.across@gmail.com
+# * Commercial Usage: please contact kisty.liu@gmail.com
 # * Non-Commercial Usage:
 #     Licensed under the Apache License, Version 2.0 (the "License");
 #     you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 
-import pandas as pd
 import featurizer.functors.talib as talib
 from featurizer.functors.labeler import RegressionLabler
 import featurizer.functors.volume_price as vp
@@ -53,26 +52,21 @@ class DefaultFeaturizer(object):
         self.MAROCP60 = talib.MAROCP(timeperiod=60)
         self.MAROCP90 = talib.MAROCP(timeperiod=90)
 
-        
-        #
         self.MARelative5 = talib.MARelative(timeperiod=5)
         self.MARelative10 = talib.MARelative(timeperiod=10)
         self.MARelative20 = talib.MARelative(timeperiod=20)
         self.MARelative30 = talib.MARelative(timeperiod=30)
         self.MARelative60 = talib.MARelative(timeperiod=60)
         self.MARelative90 = talib.MARelative(timeperiod=90)
-
         
         #VMA
-        #
         self.VolumeRelative5 = talib.VolumeRelative(timeperiod=5)
         self.VolumeRelative10 = talib.VolumeRelative(timeperiod=10)
         self.VolumeRelative20 = talib.VolumeRelative(timeperiod=20)
         self.VolumeRelative30 = talib.VolumeRelative(timeperiod=30)
         self.VolumeRelative60 = talib.VolumeRelative(timeperiod=60)
         self.VolumeRelative90 = talib.VolumeRelative(timeperiod=90)
-    
-        
+           
         # price-volume
         self.PriceVolume = talib.PriceVolume()
                 
@@ -114,6 +108,7 @@ class DefaultFeaturizer(object):
         
     def forward(self, open_ts, high_ts, low_ts, close_ts, volume_ts):
         feature_list = []
+        feature_name_list = []
         
         # data
         returns_ts = self.pct_change(close_ts)
@@ -124,10 +119,12 @@ class DefaultFeaturizer(object):
         lrocp = self.ROCP(low_ts)
         
         feature_list.extend([rocp, orocp, hrocp, lrocp])
+        feature_name_list.extend(["rocp", "orocp", "hrocp", "lrocp"])
         
         # 6
         norm_DIF, norm_DEA, norm_MACD, norm_DIF_diff, norm_DEA_diff, norm_MACD_diff = self.MACD(close_ts)
         feature_list.extend([norm_DIF, norm_DEA, norm_MACD, norm_DIF_diff, norm_DEA_diff, norm_MACD_diff])
+        feature_name_list.extend(["norm_DIF", "norm_DEA", "norm_MACD", "norm_DIF_diff", "norm_DEA_diff", "norm_MACD_diff"])
         
         # 6
         RSI6 = self.RSI6(close_ts)
@@ -138,14 +135,17 @@ class DefaultFeaturizer(object):
         RSIROCP12 = self.RSIROCP12(close_ts)
         RSIROCP24 = self.RSIROCP24(close_ts)
         feature_list.extend([RSI6,RSI12,RSI24,RSIROCP6,RSIROCP12,RSIROCP24])
+        feature_name_list.extend(["RSI6","RSI12","RSI24","RSIROCP6","RSIROCP12","RSIROCP24"])
         
         # 1
         VolumeROCP = self.VROCP(volume_ts)
         feature_list.extend([VolumeROCP])
+        feature_name_list.extend(["VolumeROCP"])
         
         # 3
         upperband_relative_ts, middleband_relative_ts, lowerband_relative_ts = self.BOLL(close_ts)
         feature_list.extend([upperband_relative_ts, middleband_relative_ts, lowerband_relative_ts])
+        feature_name_list.extend(["upperband_relative_ts", "middleband_relative_ts", "lowerband_relative_ts"])
         
         # 10
         MAROCP5= self.MAROCP5(close_ts)
@@ -165,7 +165,9 @@ class DefaultFeaturizer(object):
 
         
         feature_list.extend([MAROCP5,MAROCP10,MAROCP20,MAROCP30,MAROCP60,MAROCP90])
+        feature_name_list.extend(["MAROCP5","MAROCP10","MAROCP20","MAROCP30","MAROCP60","MAROCP90"])
         feature_list.extend([MARelative5,MARelative10,MARelative20,MARelative30,MARelative60,MARelative90])
+        feature_name_list.extend(["MARelative5","MARelative10","MARelative20","MARelative30","MARelative60","MARelative90"])
         
         # 10 VMAROCP
         VMAROCP5= self.MAROCP5(volume_ts)
@@ -185,15 +187,19 @@ class DefaultFeaturizer(object):
 
        
         feature_list.extend([VMAROCP5,VMAROCP10,VMAROCP20,VMAROCP30,VMAROCP60,VMAROCP90])#, VMAROCP360, VMAROCP720])
+        feature_name_list.extend(["VMAROCP5","VMAROCP10","VMAROCP20","VMAROCP30","VMAROCP60","VMAROCP90"])#, "VMAROCP360", "VMAROCP720"])
         feature_list.extend([VolumeRelative5,VolumeRelative10,VolumeRelative20,VolumeRelative30,VolumeRelative60,VolumeRelative90])#, VolumeRelative360, VolumeRelative720])
+        feature_name_list.extend(["VolumeRelative5","VolumeRelative10","VolumeRelative20","VolumeRelative30","VolumeRelative60","VolumeRelative90"])#, "VolumeRelative360", "VolumeRelative720"])
        
         # price_volume
         PriceVolume = self.PriceVolume(close_ts, volume_ts)
         feature_list.extend([PriceVolume])
+        feature_name_list.extend(["PriceVolume"])
         
         # dkj
         RSV, K, D, J = self.KDJ(high_ts, low_ts, close_ts)
         feature_list.extend([RSV, K, D, J])
+        feature_name_list.extend(["RSV", "K", "D", "J"])
         
         # journalhub
         ReturnsRollingStd4 = self.ReturnsRollingStd4(returns_ts)
@@ -206,8 +212,9 @@ class DefaultFeaturizer(object):
         BackwardSharpRatio36 = self.BackwardSharpRatio36(returns_ts)
         
         feature_list.extend([ReturnsRollingStd4,ReturnsRollingStd12,ReturnsRollingStd22,BackwardSharpRatio4,BackwardSharpRatio12,BackwardSharpRatio22, BackwardSharpRatio36])
-        #
+        feature_name_list.extend(["ReturnsRollingStd4","ReturnsRollingStd12","ReturnsRollingStd22","BackwardSharpRatio4","BackwardSharpRatio12","BackwardSharpRatio22", "BackwardSharpRatio36"])
         
+        #        
         VolumeReturnsCorr4 = self.VolumeReturnsCorr4(volume_ts, returns_ts)
         VolumeReturnsCorr12 = self.VolumeReturnsCorr12(volume_ts, returns_ts)
         VolumeReturnsCorr22 = self.VolumeReturnsCorr22(volume_ts, returns_ts)
@@ -221,9 +228,11 @@ class DefaultFeaturizer(object):
         VolumeVwapDeviation12 = self.VolumeVwapDeviation12(close_ts, volume_ts)
         VolumeVwapDeviation22 = self.VolumeVwapDeviation22(close_ts, volume_ts)
         feature_list.extend([VolumeReturnsCorr4,VolumeReturnsCorr12,VolumeReturnsCorr22,HighLowCorr4,HighLowCorr12,HighLowCorr22,VolumeVwapDeviation4,VolumeVwapDeviation12,VolumeVwapDeviation22])
+        feature_name_list.extend(["VolumeReturnsCorr4","VolumeReturnsCorr12","VolumeReturnsCorr22","HighLowCorr4","HighLowCorr12","HighLowCorr22","VolumeVwapDeviation4","VolumeVwapDeviation12","VolumeVwapDeviation22"])
         
         OpenJump = self.OpenJump(open_ts, close_ts)
         feature_list.extend([OpenJump])
+        feature_name_list.extend(["OpenJump"])
         
         AbnormalVolume4 = self.AbnormalVolume4(volume_ts)
         AbnormalVolume12 = self.AbnormalVolume12(volume_ts)
@@ -233,11 +242,14 @@ class DefaultFeaturizer(object):
         VolumeRangeDeviation12 = self.VolumeRangeDeviation12(high_ts,low_ts,volume_ts)
         VolumeRangeDeviation22 = self.VolumeRangeDeviation22(high_ts,low_ts,volume_ts)
         feature_list.extend([AbnormalVolume4,AbnormalVolume12,AbnormalVolume22,VolumeRangeDeviation4,VolumeRangeDeviation12,VolumeRangeDeviation22])
+        feature_name_list.extend(["AbnormalVolume4","AbnormalVolume12","AbnormalVolume22","VolumeRangeDeviation4","VolumeRangeDeviation12","VolumeRangeDeviation22"])
         
         # label
         label = self.labeler(close_ts)
         feature_list.extend([label])
-        return feature_list
+        feature_name_list.extend(["label"])
+        
+        return feature_list, feature_name_list
 
 if __name__ == "__main__":
     
@@ -252,6 +264,6 @@ if __name__ == "__main__":
     volume_ts = abs(torch.randn((sequence_len, order_book_ids)))
     
     featurizer = DefaultFeaturizer()
-    feature_list = featurizer.forward(open_ts, high_ts, low_ts, close_ts, volume_ts)
+    feature_list, feature_name_list = featurizer.forward(open_ts, high_ts, low_ts, close_ts, volume_ts)
     print(len(feature_list))
-    print(feature_list[0].shape)
+    print(len(feature_name_list))
