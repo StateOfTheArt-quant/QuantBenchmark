@@ -70,13 +70,3 @@ def preprocess_raw_feature(df: pd.DataFrame, lower_bound: float=0.01, upper_boun
     # 4 optional add industry dummy variable              #
     # =================================================== #
     return df
-
-
-
-if __name__ == "__main__":
-    
-    import pandas as pd
-    m_index1 = pd.Index([("a","d1"),("a","d2"),("b","d1"),("b","d2"),("b","d3"),("c","d1"),("c","d2"),("c","d3")],name=["order_book_ids","datetime"])
-    data_df = pd.DataFrame(np.random.randint(1,100,(8,3)),index=m_index1, columns=["EP","BP","Label"])
-    data_df["EP"].iloc[1] = np.NAN
-    df = preprocess_raw_feature(data_df, level="datetime", lower_bound=0.2, upper_bound=0.8)
