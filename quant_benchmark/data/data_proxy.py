@@ -24,14 +24,11 @@ class DataProxy(TradingDatesMixin):
         self._data_source = data_source
         TradingDatesMixin.__init__(self, data_source.get_trading_calendar())
     
-    def history_bars(self, order_book_id, bar_count, dt, fields=None, frequency='1d',skip_suspended=True, include_now=False, adjust_type="pre", adjust_orig=None):
-        return self._data_source.history_bars(order_book_id=order_book_id, bar_count=bar_count, dt=dt, fields=fields, frequency=frequency,skip_suspended=skip_suspended, include_now=include_now, adjust_type=adjust_type, adjust_orig=adjust_orig)
+    def history_bars(self, order_book_ids, bar_count, dt, fields=None, frequency='1d',skip_suspended=True, include_now=True, adjust_type="pre", adjust_orig=None):
+        return self._data_source.history_bars(order_book_ids=order_book_ids, bar_count=bar_count, dt=dt, fields=fields, frequency=frequency,skip_suspended=skip_suspended, include_now=include_now, adjust_type=adjust_type, adjust_orig=adjust_orig)
     
-    def history_fundamentals(self, order_book_id, bar_count, dt, fields=None,frequency='1d'):
-        return self._data_source.history_fundamentals(order_book_id=order_book_id, bar_count=bar_count, dt=dt, fields=fields,frequency=frequency)
+    def history_fundamentals(self, order_book_ids, bar_count, dt, fields=None, frequency='1d',skip_suspended=True, include_now=True, adjust_type="pre", adjust_orig=None):
+        return self._data_source.history_fundamentals(order_book_ids=order_book_ids, bar_count=bar_count, dt=dt, fields=fields, frequency=frequency,skip_suspended=skip_suspended, include_now=include_now, adjust_type=adjust_type, adjust_orig=adjust_orig)
     
-    def history_bars_many(self, order_book_ids, bar_count, dt, fields=None, frequency='1d',skip_suspended=True, include_now=False, adjust_type="pre", adjust_orig=None):
-        return self._data_source.history_bars_many(order_book_ids=order_book_ids, bar_count=bar_count, dt=dt, fields=fields, frequency=frequency, skip_suspended=skip_suspended, include_now=include_now, adjust_type=adjust_type, adjust_orig=adjust_orig)
-    
-    def history_fundamentals_many(self, order_book_ids, bar_count, dt, fields=None, frequency="1d"):
-        return self._data_source.history_fundamentals_many(order_book_ids=order_book_ids, bar_count=bar_count, dt=dt, fields=fields, frequency=frequency)
+    def history_tradings(self, order_book_ids, bar_count, dt, fields=None, frequency='1d',skip_suspended=True, include_now=True, adjust_type="pre", adjust_orig=None):
+        return self._data_source.history_tradings(order_book_ids=order_book_ids, bar_count=bar_count, dt=dt, fields=fields, frequency=frequency,skip_suspended=skip_suspended, include_now=include_now, adjust_type=adjust_type, adjust_orig=adjust_orig)
