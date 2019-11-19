@@ -247,7 +247,7 @@ class DefaultFeaturizer(object):
         # label
         label = self.labeler(close_ts)
         feature_list.extend([label])
-        feature_name_list.extend(["label"])
+        feature_name_list.extend(["Label"])
         
         return feature_list, feature_name_list
 

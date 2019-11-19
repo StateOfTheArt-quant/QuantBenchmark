@@ -67,8 +67,8 @@ def sklearn_train(df):
     X, y = split_Xy(df)
     return _sklearn_train(X, y)
     
-def training(df):
-    idx = df.columns.drop("Label")
+def training(df, label_name="Label"):
+    idx = df.columns.drop(label_name)
     lr_coef_container = {}
     lasso_coef_container = {}
     rr_coef_container = {}
