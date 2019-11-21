@@ -5,34 +5,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from sklearn.linear_model import LinearRegression, Lasso, Ridge, ElasticNet
-import statsmodels.api as sm
-from sklearn.ensemble import RandomForestRegressor
-
-#sm ols
-def smols(x,y):
-    return sm.OLS(y, x)
-
-# sklearn ols
-def skols():
-    return LinearRegression()
-
-# sklearn lasso
-def lasso(alpha=0.01):
-    return Lasso(alpha=alpha)
-
-# sklearn ridge
-def ridge(alpha=0.5):
-    return Ridge(alpha=alpha)
-
-# ENet
-def enet_model(alpha=0.1, l1_ratio=0.7):
-    return ElasticNet(alpha=alpha, l1_ratio=l1_ratio)
-
-# RandomForestRegressor
-def rf_model():
-    return RandomForestRegressor()
-
 # NN1
 class NN1(nn.Module):
 
@@ -43,7 +15,6 @@ class NN1(nn.Module):
         self.layer2 = nn.Linear(hidden_size, output_size)
 
     def forward(self, x):
-#        pdb.set_trace()
         x = F.relu(self.layer1(x))
         x = self.layer2(x)
         return x
@@ -165,4 +136,3 @@ if __name__ ==  "__main__":
     target = torch.randn_like(output)    
     loss = loss_func(output, target)
     print(loss)
-    
