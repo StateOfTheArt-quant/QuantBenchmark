@@ -14,8 +14,8 @@ def predict_return(exposure:pd.DataFrame, factor_return:pd.Series) -> pd.Series:
 
 
 def long_short_portfolio(estimate_return:pd.Series, long_percent=0.1, short_percent=0.1):
-    long_count = int(len(estimate_return)*long_percent) if len(estimate_return)*long_percent>0.5 else 1
-    short_count = int(len(estimate_return)*short_percent) if len(estimate_return)*short_percent>0.5 else 1
+    long_count = int(len(estimate_return)*long_percent) if len(estimate_return)*long_percent>1 else 1
+    short_count = int(len(estimate_return)*short_percent) if len(estimate_return)*short_percent>1 else 1
     estimate_return = estimate_return.sort_values(ascending=False)
     long_portfolio = estimate_return[:long_count].index.to_list()
     short_portfolio = estimate_return[-short_count:].index.to_list()
