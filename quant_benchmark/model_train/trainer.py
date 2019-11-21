@@ -4,13 +4,26 @@
 import pandas as pd
 from sklearn.metrics import r2_score
 
-
+    
 class Trainer(object):
     
     def __init__(self, model):
         self.model = model
+        
+    @staticmethod
+    def split_Xy(df, label_name="Label"):
+        assert label_name in df.columns 
+        y = df[label_name]
+        X = df[df.columns.drop(label_name)]
+        return X, y
     
-    def sklearn_trainer(self, df, label_name="Label"):
+    def trainer(self, *args, **kwargs):
+        pass
+    
+    
+class SklearnTrainer(Trainer):
+    
+    def trainer(self, df, label_name="Label"):
         idx = df.columns.drop(label_name)
         coef_container = {}
         r2_container = {}
@@ -36,12 +49,8 @@ class Trainer(object):
         return coef, r2
     
     
-    @staticmethod
-    def split_Xy(df, label_name="Label"):
-        assert label_name in df.columns 
-        y = df[label_name]
-        X = df[df.columns.drop(label_name)]
-        return X, y
     
-    def deep_learning_trainer(self):
+class DeepLearningTrainer(Trainer):
+    
+    def trainer(self):
         pass

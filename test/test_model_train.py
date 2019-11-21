@@ -5,7 +5,7 @@ import unittest
 import pandas as pd
 import numpy as np
 
-from quant_benchmark.model_train.trainer import Trainer
+from quant_benchmark.model_train.trainer import SklearnTrainer
 from quant_benchmark.model.sklearn_models import lasso, skols
 
 class ModelTrain(unittest.TestCase):
@@ -20,15 +20,15 @@ class ModelTrain(unittest.TestCase):
     
     def test_sklearn_trainer_1(self):
         model = lasso()
-        trainer = Trainer(model)
-        coef_df, r2 = trainer.sklearn_trainer(self.data, label_name="Label")
+        sklearn_trainer = SklearnTrainer(model)
+        coef_df, r2 = sklearn_trainer.trainer(self.data, label_name="Label")
         print("lasso coef:\n", coef_df)
         print("lasso r2 score:\n", r2)
         
     def test_sklearn_trainer_2(self):
         model = skols()
-        trainer = Trainer(model)
-        coef_df, r2 = trainer.sklearn_trainer(self.data, label_name="Label")
+        sklearn_trainer = SklearnTrainer(model)
+        coef_df, r2 = sklearn_trainer.trainer(self.data, label_name="Label")
         print("linear regression coef:\n", coef_df)
         print("linear regression r2 score:\n", r2)
 
