@@ -104,4 +104,6 @@ venv.bak/
 .mypy_cache/
 
 # featurizer
-test_featurizer.py
+barra_featurizer.py
+style_factor_functor.py
+barra_feature_creator.py

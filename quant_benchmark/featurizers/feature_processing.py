@@ -44,7 +44,7 @@ def standardlize_df(df: pd.DataFrame) -> pd.DataFrame:
     df = pd.DataFrame(scaler.fit_transform(df), index=df.index, columns=df.columns)    
     return df
 
-def standardlizer(df: pd.DataFrame) -> pd.DataFrame:    
+def standardlizer(df: pd.DataFrame) -> pd.DataFrame:
     return df.groupby(level=1).apply(standardlize_df)
 
 
@@ -57,16 +57,21 @@ def preprocess_raw_feature(df: pd.DataFrame, lower_bound: float=0.01, upper_boun
     df = winsorizer(df, lower_bound=lower_bound, upper_bound=upper_bound)
     
     # =================================================== #
-    # 2 standardlize with nan                             #
+    # 2 dropna                                            #
+    # =================================================== #
+    df = df.dropna(axis=0, thresh=int(df.shape[1]*0.5))
+
+    # =================================================== #
+    # 3 standardlize with nan                             #
     # =================================================== #
     df = standardlizer(df)
     
     # =================================================== #
-    # 3 fillna or dropna                                  #
+    # 4 fillna                                            #
     # =================================================== #
     df = df.fillna(0)
     
     # =================================================== #
-    # 4 optional add industry dummy variable              #
+    # 5 optional add industry dummy variable              #
     # =================================================== #
     return df

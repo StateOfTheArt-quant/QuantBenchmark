@@ -28,7 +28,7 @@ class SklearnTrainer(Trainer):
         coef_container = {}
         r2_container = {}
         for dt in df.index.levels[1]:
-#            print("cross regression on :", dt)
+            print("cross regression on :", dt)
             df_dt = df.xs(dt, level=1)
             X, y = Trainer.split_Xy(df_dt, label_name=label_name)
             coef, r2 = self._sklearn_linear_regression(X, y)        
@@ -45,7 +45,7 @@ class SklearnTrainer(Trainer):
 
         coef = self.model.coef_    
         r2 = r2_score(y, y_predict)
-#        print("r2 score:", r2)
+        print("r2 score:", r2)
         return coef, r2
     
     
