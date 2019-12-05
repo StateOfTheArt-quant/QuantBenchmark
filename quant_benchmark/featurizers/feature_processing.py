@@ -49,7 +49,7 @@ def standardlizer(df: pd.DataFrame) -> pd.DataFrame:
 
 
 
-def preprocess_raw_feature(df: pd.DataFrame, lower_bound: float=0.01, upper_bound: float=0.99) -> pd.DataFrame:
+def _preprocess_raw_feature(df: pd.DataFrame, lower_bound: float=0.01, upper_bound: float=0.99) -> pd.DataFrame:
     # =================================================== #
     # 1 winsorize the anormaly                            #
     # =================================================== #
@@ -75,3 +75,14 @@ def preprocess_raw_feature(df: pd.DataFrame, lower_bound: float=0.01, upper_boun
     # 5 optional add industry dummy variable              #
     # =================================================== #
     return df
+
+def preprocess_raw_feature(df: pd.DataFrame, lower_bound: float=0.01, upper_bound: float=0.99, avoid_fields: list=None) -> pd.DataFrame:
+    if avoid_fields is None:
+        df = _preprocess_raw_feature(df, lower_bound=lower_bound, upper_bound=upper_bound)
+        return df
+    else:
+        avoid_df = df[avoid_fields]
+        to_process_df = df.drop(columns=avoid_fields)
+        df = _preprocess_raw_feature(to_process_df, lower_bound=lower_bound, upper_bound=upper_bound)
+        df = df.join(avoid_df, how="left")
+        return df
