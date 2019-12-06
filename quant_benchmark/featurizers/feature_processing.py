@@ -44,12 +44,12 @@ def standardlize_df(df: pd.DataFrame) -> pd.DataFrame:
     df = pd.DataFrame(scaler.fit_transform(df), index=df.index, columns=df.columns)    
     return df
 
-def standardlizer(df: pd.DataFrame) -> pd.DataFrame:    
+def standardlizer(df: pd.DataFrame) -> pd.DataFrame:
     return df.groupby(level=1).apply(standardlize_df)
 
 
 
-def preprocess_raw_feature(df: pd.DataFrame, lower_bound: float=0.01, upper_bound: float=0.99) -> pd.DataFrame:
+def _preprocess_raw_feature(df: pd.DataFrame, lower_bound: float=0.01, upper_bound: float=0.99) -> pd.DataFrame:
     # =================================================== #
     # 1 winsorize the anormaly                            #
     # =================================================== #
@@ -57,16 +57,32 @@ def preprocess_raw_feature(df: pd.DataFrame, lower_bound: float=0.01, upper_boun
     df = winsorizer(df, lower_bound=lower_bound, upper_bound=upper_bound)
     
     # =================================================== #
-    # 2 standardlize with nan                             #
+    # 2 dropna                                            #
+    # =================================================== #
+    df = df.dropna(axis=0, thresh=int(df.shape[1]*0.5))
+
+    # =================================================== #
+    # 3 standardlize with nan                             #
     # =================================================== #
     df = standardlizer(df)
     
     # =================================================== #
-    # 3 fillna or dropna                                  #
+    # 4 fillna                                            #
     # =================================================== #
     df = df.fillna(0)
     
     # =================================================== #
-    # 4 optional add industry dummy variable              #
+    # 5 optional add industry dummy variable              #
     # =================================================== #
     return df
+
+def preprocess_raw_feature(df: pd.DataFrame, lower_bound: float=0.01, upper_bound: float=0.99, avoid_fields: list=None) -> pd.DataFrame:
+    if avoid_fields is None:
+        df = _preprocess_raw_feature(df, lower_bound=lower_bound, upper_bound=upper_bound)
+        return df
+    else:
+        avoid_df = df[avoid_fields]
+        to_process_df = df.drop(columns=avoid_fields)
+        df = _preprocess_raw_feature(to_process_df, lower_bound=lower_bound, upper_bound=upper_bound)
+        df = df.join(avoid_df, how="left")
+        return df

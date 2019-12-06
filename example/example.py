@@ -5,10 +5,10 @@ import os
 import jqdatasdk
 
 from xqdata.base_data_source.default_data_source import DefaultDataSource
-from quant_benchmark.featurizers.feature_creator import create_raw_feature
+from quant_benchmark.featurizers.feature_creator import DefaultFeatureCreator
 from quant_benchmark.featurizers.feature_processing import preprocess_raw_feature
 from quant_benchmark.model.sklearn_models import skols
-from quant_benchmark.model_train.trainer import Trainer
+from quant_benchmark.model_train.trainer import SklearnTrainer
 from quant_benchmark.strategy.portfolio import predict_return, long_short_portfolio
 
 ###############################################################################
@@ -34,7 +34,8 @@ data = data_source.history_bars(order_book_ids=order_book_ids,bar_count=bar_coun
 ###############################################################################
 #                            step1 featurizer                                 #
 ###############################################################################
-raw_featurized = create_raw_feature(data)
+creator = DefaultFeatureCreator()
+raw_featurized = creator.feature_creator(data)
 featurized = preprocess_raw_feature(raw_featurized, lower_bound=0.1, upper_bound=0.9)
 
 
@@ -49,8 +50,8 @@ exposure = exposure.loc[exposure["datetime"]!=dt]
 exposure = exposure.set_index(["order_book_id", "datetime"])
 
 lr_model = skols()
-trainer = Trainer(lr_model)
-lr_coef, r2_score = trainer.sklearn_trainer(exposure, label_name="Label")
+trainer = SklearnTrainer(lr_model)
+lr_coef, r2_score = trainer.trainer(exposure, label_name="Label")
 lr_coef = lr_coef.mean()
 
 
