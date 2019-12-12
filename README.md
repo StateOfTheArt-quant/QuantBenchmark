@@ -12,7 +12,7 @@ quant benchmark in research and production environment
 |-------------|-----------|-----------|---------------|-------------|--------------|-------------|-------------|--------------------|
 | -0.000149   | 0.000269  | 0.000009  | -0.000139     | -0.000356   | 0.000086     | -0.000109   |   -0.000445 |   -0.000113        |
 
-![image](https://github.com/StateOfTheArt-quant/QuantBenchmark/assets/images/lr_factor_returns.png)
+![image](https://github.com/yoyo182487329/QuantBenchmark/blob/master/assets/images/lr_factor_returns.png)
 
 
 ### r2 score describe
