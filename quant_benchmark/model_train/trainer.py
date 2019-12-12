@@ -33,7 +33,7 @@ class SklearnTrainer(Trainer):
         coef_container = {}
         r2_container = {}
         for dt in df.index.levels[1]:
-            print("cross regression on :", dt)
+#            print("cross regression on :", dt)
             df_dt = df.xs(dt, level=1)
             X, y = Trainer.split_Xy(df_dt, label_name=label_name)
             coef, relative_r2, total_r2 = self._sklearn_linear_regression(X, y)
@@ -51,7 +51,7 @@ class SklearnTrainer(Trainer):
         coef = self.model.coef_
         relative_r2 = r2_score(y, y_predict)
         total_r2 = total_r2_score(y, y_predict)
-        print("relative r2 score: {}, total r2 score: {}".format(relative_r2, total_r2))
+#        print("relative r2 score: {}, total r2 score: {}".format(relative_r2, total_r2))
         return coef, relative_r2, total_r2
     
     

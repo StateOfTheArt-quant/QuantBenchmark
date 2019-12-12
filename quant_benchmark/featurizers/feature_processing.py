@@ -42,10 +42,25 @@ def winsorizer(dataframe : pd.DataFrame, lower_bound: float = 0.01, upper_bound:
 def standardlize_df(df: pd.DataFrame) -> pd.DataFrame:
     scaler = StandardScaler()
     df = pd.DataFrame(scaler.fit_transform(df), index=df.index, columns=df.columns)    
-    return df
+#    return df
+#    pdb.set_trace()
+    mean = pd.DataFrame(scaler.mean_.reshape(1,-1), index=[df.reset_index()["datetime"][0]], columns=df.columns)
+    var = pd.DataFrame(scaler.var_.reshape(1,-1), index=[df.reset_index()["datetime"][0]], columns=df.columns)
+    return df, mean, var
 
 def standardlizer(df: pd.DataFrame) -> pd.DataFrame:
-    return df.groupby(level=1).apply(standardlize_df)
+    data = df.groupby(level=1).apply(standardlize_df)
+    standardlized_container = []
+    mean_container = []
+    var_container = []
+    for i in range(len(data)):
+        standardlized_container.append(data[i][0])
+        mean_container.append(data[i][1])
+        var_container.append(data[i][2])
+    df = pd.concat(standardlized_container).sort_index(level=0)
+    mean = pd.concat(mean_container)
+    var = pd.concat(var_container)
+    return df, mean, var
 
 
 
@@ -64,7 +79,7 @@ def _preprocess_raw_feature(df: pd.DataFrame, lower_bound: float=0.01, upper_bou
     # =================================================== #
     # 3 standardlize with nan                             #
     # =================================================== #
-    df = standardlizer(df)
+    df, mean, var = standardlizer(df)
     
     # =================================================== #
     # 4 fillna                                            #
