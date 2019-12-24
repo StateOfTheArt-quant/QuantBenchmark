@@ -4,12 +4,12 @@
 import numpy as np
 import pandas as pd
 
-def predict_return(exposure:pd.DataFrame, factor_return:pd.Series) -> pd.Series:
+def predict_return(exposure:pd.DataFrame, factor_return:pd.Series, intercept: float) -> pd.Series: #
     """
     exposure: index: order_book_id, columns: factor_name
     factor_return: index: factor_name
     """
-    predicted = np.dot(exposure, factor_return)
+    predicted = np.dot(exposure, factor_return) + intercept
     return pd.Series(predicted, index=exposure.index)
 
 

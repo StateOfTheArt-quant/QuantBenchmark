@@ -21,15 +21,17 @@ class ModelTrain(unittest.TestCase):
     def test_sklearn_trainer_1(self):
         model = lasso()
         sklearn_trainer = SklearnTrainer(model)
-        coef_df, r2 = sklearn_trainer.trainer(self.data, label_name="Label")
-        print("lasso coef:\n", coef_df)
-        print("lasso r2 score:\n", r2)
+        coef_df, intercept_s, r2 = sklearn_trainer.trainer(self.data, label_name="Label")
+        print("linear regression coef:\n", coef_df)
+        print("linear regression intercept:\n", intercept_s)
+        print("linear regression r2 score:\n", r2)
         
     def test_sklearn_trainer_2(self):
         model = skols()
         sklearn_trainer = SklearnTrainer(model)
-        coef_df, r2 = sklearn_trainer.trainer(self.data, label_name="Label")
+        coef_df, intercept_s, r2 = sklearn_trainer.trainer(self.data, label_name="Label")
         print("linear regression coef:\n", coef_df)
+        print("linear regression intercept:\n", intercept_s)
         print("linear regression r2 score:\n", r2)
 
 
