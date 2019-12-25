@@ -6,8 +6,8 @@ from sklearn.ensemble import RandomForestRegressor
 
 
 # sklearn ols
-def skols():
-    return LinearRegression()
+def skols(fit_intercept=True):
+    return LinearRegression(fit_intercept=fit_intercept)
 
 # sklearn lasso
 def lasso(alpha=0.01):

@@ -32,16 +32,19 @@ class SklearnTrainer(Trainer):
         idx = df.columns.drop(label_name)
         coef_container = {}
         r2_container = {}
+        intercept_container = {}
         for dt in df.index.levels[1]:
-            print("cross regression on :", dt)
+#            print("cross regression on :", dt)
             df_dt = df.xs(dt, level=1)
             X, y = Trainer.split_Xy(df_dt, label_name=label_name)
-            coef, relative_r2, total_r2 = self._sklearn_linear_regression(X, y)
+            coef, intercept, relative_r2, total_r2 = self._sklearn_linear_regression(X, y)
             coef_container[dt] = coef
             r2_container[dt] = [relative_r2, total_r2]
+            intercept_container[dt] = intercept
         lr_coef_df = pd.DataFrame(coef_container, index=idx).transpose()
+        intercept_s = pd.Series(intercept_container, name="intercept")
         r2_score = pd.DataFrame(r2_container, index=["relative_r2","total_r2"]).transpose()
-        return lr_coef_df, r2_score       
+        return lr_coef_df, intercept_s, r2_score
     
     
     def _sklearn_linear_regression(self, X, y):
@@ -49,10 +52,11 @@ class SklearnTrainer(Trainer):
         y_predict = self.model.predict(X)
 
         coef = self.model.coef_
+        intercept = self.model.intercept_
         relative_r2 = r2_score(y, y_predict)
         total_r2 = total_r2_score(y, y_predict)
-        print("relative r2 score: {}, total r2 score: {}".format(relative_r2, total_r2))
-        return coef, relative_r2, total_r2
+#        print("relative r2 score: {}, total r2 score: {}".format(relative_r2, total_r2))
+        return coef, intercept, relative_r2, total_r2
     
     
     

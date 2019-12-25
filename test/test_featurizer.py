@@ -52,6 +52,8 @@ class FeatureProcessor(unittest.TestCase):
         self.assertEqual(df["EP"].iloc[1], 0.)
         self.assertEqual(len(df.loc["000002.XSHE"].index), 2)
         
+    
+        
 if __name__ == "__main__":
     
     unittest.main()
